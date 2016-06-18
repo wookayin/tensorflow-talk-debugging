@@ -8,7 +8,7 @@ class: titlepage, no-number
 # A Practical Guide for Debugging Tensorflow Codes
 ## .gray.author[Jongwook Choi]
 ### .gray.small[June 18, 2016]
-### .x-small[https://wookayin.github.io/TensorflowKR-2016-talk-debugging]
+### .x-small[https://github.com/wookayin/TensorflowKR-2016-talk-debugging]
 
 ---
 layout: false
@@ -132,7 +132,7 @@ def train():
 ```
 
 ---
-## Review: with Tensorflow (with IoC)
+## Review: with Tensorflow
 
 
 ```python
@@ -1202,7 +1202,7 @@ def multilayer_perceptron(x):
       [`line_profiler`][line-profiler]
       or [`%profile`][ipython-profile] in IPython
     - Use [`nvprof`][nvprof] for profiling CUDA operations
-    - Use Tensorflow's CUPTI (CUDA Profiling Tools Interface)
+    - Use CUPTI (CUDA Profiling Tools Interface)-based [tools][tf-issue-1824] in Tensorflow
 
 .img-66.center[![](images/tracing-cupti.png)]
 
@@ -1210,6 +1210,7 @@ def multilayer_perceptron(x):
 [line-profiler]: https://pypi.python.org/pypi/line_profiler/
 [ipython-profile]: https://ipython.org/ipython-doc/3/interactive/magics.html
 [nvprof]: http://docs.nvidia.com/cuda/profiler-users-guide/
+[tf-issue-1824]: https://github.com/tensorflow/tensorflow/issues/1824
 
 
 ---
