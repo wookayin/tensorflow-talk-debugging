@@ -812,8 +812,9 @@ To get any .green[operations] or .green[tensors] that might *not* be stored expl
 
 - `tf.get_default_graph()`: Get the current (default) graph
 - `G.get_operations()`: List all the TF ops in the graph
-- `G.get_operation_by_name(name)`: Retrieve a specific TF op in the graph
-  .gray[(Q. How to convert an operation to a tensor?)]
+- `G.get_operation_by_name(name)`: Retrieve a specific TF op
+  <br/> .gray[(Q. How to convert an operation to a tensor?)]
+- `G.get_tensor_by_name(name)`: Retrieve a specific tensor
 - `tf.get_collection(tf.GraphKeys.~~`): Get the collection of some tensors
 
 To get .green[variables]:
@@ -1007,7 +1008,7 @@ def multilayer_perceptron(x):
 * Interpose your debugging python code in the graph
 
 
-.green[There is no silber bullet; one might need to choose the most convenient and suitable debugging tool, depending on the case]
+.green[There is no silver bullet; one might need to choose the most convenient and suitable debugging tool, depending on the case]
 
 ---
 template: inverse
