@@ -49,9 +49,9 @@ background-size: contain
 ### .green[Contents]
 
 - Introduction: Why debugging in TensorFlow is difficult
-- Basic and Advanced Methods for Debugging TensorFlow codes
-- General Tips and Guidelines for easy-debuggable code
-- .dogdrip[Benchmarking and Profiling TensorFlow codes]
+- Basic and advanced methods for debugging TensorFlow codes
+- General tips and guidelines for easy-debuggable code
+- .dogdrip[Benchmarking and profiling TensorFlow codes]
 
 ---
 
@@ -61,7 +61,7 @@ background-size: contain
   .gray[(e.g. my model is not fitting well)],
   but about how to debug your TF codes *in a programming perspective*
 - I had to assume that the audience is somewhat familiar with basics of Tensorflow and Deep Learning;
-  it would be very good if you have an experience to write Tensorflow code by yourself
+  it would be very good if you have an experience to write a Tensorflow code by yourself
 - Questions are highly welcomed! Please feel free to interrupt!
 
 ---
@@ -198,7 +198,7 @@ The most important method in Tensorflow --- where every computation is performed
 [apidocs-sessionrun]: https://www.tensorflow.org/versions/master/api_docs/python/train.html#scalar_summary
 
 ---
-## Why Tensorflow debugging is hard?
+## Why Tensorflow debugging is difficult?
 
 - *The concept of Computation Graph* might be unfamiliar to us.
 - The "Inversion of Control"
@@ -999,8 +999,6 @@ def multilayer_perceptron(x):
 ---
 ## Debugging: Summary
 
-.blue[**Basic ways:**]
-
 * `Session.run()`: Explicitly fetch, and print
 * Tensorboard: Histogram and Image Summary
 * `tf.Print()`, `tf.Assert()` operation
@@ -1053,7 +1051,7 @@ There are some good guides on the web like [this][debug-tip-matloff]
 * Especially, perform .red[shape check] for tensors (like 'static' type checking when compiling codes)
 
 ```python
-net['fc7'] = tf.nn.xw_plus_b(net['fc7'], vars['fc7/W'], vars['fc7/b'])
+net['fc7'] = tf.nn.xw_plus_b(net['fc6'], vars['fc7/W'], vars['fc7/b'])
 
 assert net['fc7'].get_shape().as_list() == [None, 4096]
 *net['fc7'].get_shape().assert_is_compatible_with([B, 4096])
