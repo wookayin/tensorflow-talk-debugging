@@ -1230,6 +1230,10 @@ class: center, middle, no-number
   <p class="left" style="margin:0; font-size: 13pt;">
   <b>Special Thanks to</b>: <br/>
   Juyong Kim, Yunseok Jang, Junhyug Noh, Cesc Park, Jongho Park</p>
+
+  <p class="left" style="margin: 10px 0 0; font-size: 11pt; color: gray">
+  TensorFlow, the TensorFlow logo and any related marks are trademarks of Google Inc.
+  </p>
 </div>
 
 .img-66[![](images/tensorflow-logo.png)]
