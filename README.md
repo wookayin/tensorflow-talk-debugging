@@ -7,3 +7,4 @@ My talk in the first meetup of [Tensorflow Korea Group](https://www.facebook.com
 
 - Slides: https://wookayin.github.io/TensorflowKR-2016-talk-debugging
 - Codes: https://github.com/wookayin/TensorflowKR-2016-talk-debugging
+- Video (in Korean): https://www.youtube.com/watch?v=01nDEZe0BfU
