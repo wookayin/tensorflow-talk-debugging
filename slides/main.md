@@ -7,7 +7,7 @@ class: titlepage, no-number
 
 # A Practical Guide for Debugging Tensorflow Codes
 ## .gray.author[Jongwook Choi]
-### .gray.small[June 18, 2016]
+### .gray.small[June 18th, 2016 <br/> .green[Latest Update: Dec 9th, 2016]]
 ### .x-small[https://github.com/wookayin/TensorflowKR-2016-talk-debugging]
 
 ---
@@ -976,6 +976,51 @@ A third-party tensorflow debugging tool: .small[https://github.com/ericjang/tdb]
 
 .img-90.center[
 ![](https://camo.githubusercontent.com/4c671d2b359c9984472f37a73136971fd60e76e4/687474703a2f2f692e696d6775722e636f6d2f6e30506d58516e2e676966)
+]
+
+---
+## `tfdbg`: The tensorflow debugger
+
+.small.green.emph[(Added in December 2016)]
+
+Recent versions of Tensorflow has the official debugger (a.k.a. [`tfdbg`](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug))
+is under development. Check out a [Tutorial](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug/examples)!
+
+```python
+import tensorflow.python.debug as tf_debug
+sess = tf.Session()
+
+# create a debug wrapper session
+*sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+
+# Add a tensor filter (similar to breakpoint)
+sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
+
+# Each session.run() will be intercepted by the debugger,
+# and we can inspect the value of tensors via the debugger interface
+sess.run(loss, feed_dict = {x : ...})
+```
+
+Although it is not yet fully functional and has some bugs, it is quite usable !
+(Google Brain team will complete and announce it soon)
+
+
+---
+## `tfdbg`: The tensorflow debugger
+
+.small.green.emph[(Added in December 2016)]
+
+.img-100.center[
+![](images/tfdbg_example1.png)
+]
+
+---
+## `tfdbg`: The tensorflow debugger
+
+.small.green.emph[(Added in December 2016)]
+
+.img-100.center[
+![](images/tfdbg_example2.png)
 ]
 
 ---
