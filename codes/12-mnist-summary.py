@@ -8,11 +8,11 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 def multilayer_perceptron(x):
     fc1 = layers.fully_connected(x, 256, activation_fn=tf.nn.relu, scope='fc1')
-    tf.histogram_summary('fc1', fc1)
-    tf.histogram_summary('fc1/sparsity', tf.nn.zero_fraction(fc1))
+    tf.summary.histogram('fc1', fc1)
+    tf.summary.histogram('fc1/sparsity', tf.nn.zero_fraction(fc1))
     fc2 = layers.fully_connected(fc1, 256, activation_fn=tf.nn.relu, scope='fc2')
-    tf.histogram_summary('fc2', fc2)
-    tf.histogram_summary('fc2/sparsity', tf.nn.zero_fraction(fc2))
+    tf.summary.histogram('fc2', fc2)
+    tf.summary.histogram('fc2/sparsity', tf.nn.zero_fraction(fc2))
     out = layers.fully_connected(fc2, 10, activation_fn=None, scope='out')
     return out
 
@@ -21,8 +21,8 @@ x = tf.placeholder(tf.float32, [None, 784])
 y = tf.placeholder(tf.float32, [None, 10])
 pred = multilayer_perceptron(x)
 
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
-tf.scalar_summary('loss', loss)
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
+tf.summary.scalar('loss', loss)
 
 global_step = tf.Variable(0, dtype=tf.int32, trainable=False)   # (*)
 train_op = tf.train.AdamOptimizer(learning_rate=0.001)\
@@ -30,13 +30,13 @@ train_op = tf.train.AdamOptimizer(learning_rate=0.001)\
 
 # histogram summary for all trainable variables (slow?)
 for v in tf.trainable_variables():
-    tf.histogram_summary(v.name, v)
+    tf.summary.histogram(v.name, v)
 
 def train(session):
     batch_size = 200
-    session.run(tf.initialize_all_variables())
-    merged_summary_op = tf.merge_all_summaries()         # (*)
-    summary_writer = tf.train.SummaryWriter('/tmp/mnist', session.graph)
+    session.run(tf.global_variables_initializer())
+    merged_summary_op = tf.summary.merge_all()
+    summary_writer = tf.summary.FileWriter('/tmp/mnist', session.graph)
 
     # Training cycle
     for epoch in range(10):

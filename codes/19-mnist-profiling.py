@@ -17,12 +17,12 @@ x = tf.placeholder(tf.float32, [None, 784])
 y = tf.placeholder(tf.float32, [None, 10])
 pred = multilayer_perceptron(x)
 
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 train_op = tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
 
 def train(session):
     batch_size = 200
-    session.run(tf.initialize_all_variables())
+    session.run(tf.global_variables_initializer())
     run_options = tf.RunOptions(trace_level=tf.RunOptions.FULL_TRACE)   # (*)
     run_metadata = tf.RunMetadata()
 
