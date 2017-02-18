@@ -1049,7 +1049,7 @@ A third-party TensorFlow debugging tool: .small[https://github.com/ericjang/tdb]
 
 <!--.small.green.emph[(Added in December 2016)]-->
 
-Recent versions of TensorFlow has the official debugger ([`tfdbg`](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug)).
+Recent versions of TensorFlow has the official debugger ([`tfdbg`](https://www.tensorflow.org/programmers_guide/debugger)).
 Still experimental, but works quite well!
 
 Check out the [HOW-TOs](https://www.tensorflow.org/programmers_guide/debugger) and [Examples](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug/examples) on `tfdbg`!!!
@@ -1213,6 +1213,25 @@ Shows the tensor value(s) in a topologically-sorted order for the run.
 
 .img-100.center[
 ![](images/tfdbg_example_stepper.png)
+]
+
+
+
+---
+
+## `tfdbg`: Screencast and Demo!
+
+.small.right[From Google Brain Team]
+
+<div class="center">
+<iframe width="672" height="378" src="https://www.youtube.com/embed/CA7fjRfduOI" frameborder="0" allowfullscreen></iframe>
+</div>
+
+<p>
+
+.small[
+<br/>
+See also: [Debug TensorFlow Models with tfdbg (@Google Developers Blog)](https://developers.googleblog.com/2017/02/debug-tensorflow-models-with-tfdbg.html)
 ]
 
 ---
