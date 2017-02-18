@@ -24,6 +24,22 @@ h1, h2, h3 {
   font-weight: 800;
 }
 
+.TODO { background-color: #ffc9c9;border: 2px solid red; padding: 2px; }
+.TODO:before { color: #e03131; content: "TODO: "; }
+
+.border-black {
+  border: 2px solid black;
+  padding: 2px; margin: -2px;
+}
+.border-red {
+  border: 2px solid #fa5252; /* oc-red-6 */
+  padding: 2px; margin: -2px;
+}
+.border-dotted {
+  border-style: dotted;
+}
+
+
 
 .emph {
   font-style: italic;
@@ -42,6 +58,12 @@ h1, h2, h3 {
 code {
   border-radius: 5px;
 }
+code.remark-code {
+  /* not inline, backticks */
+  border-style: dashed;
+  border-width: 1px;
+}
+
 .remark-code-line-highlighted {
   background-color: rgba(80, 188, 225, 0.5);
   padding: 1.5px;
@@ -118,6 +140,7 @@ a, a:visited {
 }
 .titlepage .author {
   font-size: 35px;
+  color: #fff3bf;  /* oc-yellow-1 */
 }
 .no-number .remark-slide-number {
   display: none;

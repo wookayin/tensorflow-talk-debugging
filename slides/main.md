@@ -3,38 +3,28 @@ class: center, middle, inverse
 layout: true
 
 ---
+
 class: titlepage, no-number
 
-# A Practical Guide for Debugging Tensorflow Codes
-## .gray.author[Jongwook Choi]
-### .gray.small[June 18th, 2016 <br/> .green[Latest Update: Dec 9th, 2016]]
-### .x-small[https://github.com/wookayin/TensorflowKR-2016-talk-debugging]
+# A Practical Guide for Debugging TensorFlow Codes
+
+## .author[Jongwook Choi]
+
+### .small[.white[Feb 17th, 2017] <br/> .green[Initial Version: June 18th, 2016]]
+
+### .x-small[https://github.com/wookayin/tensorflow-talk-debugging]
+
 
 ---
+
 layout: false
 
-## About
-
-This talk aims to share you with some practical guides and tips on writing and debugging Tensorflow codes.
-
---
-
-... because you might find that debugging Tensorflow codes is something like ...
-
-
----
-class: center, middle, no-number, bg-full
-background-image: url(images/meme-doesnt-work.jpg)
-background-repeat: no-repeat
-background-size: contain
-
----
 ## Bio: Jongwook Choi ([@wookayin][wookayin-gh])
 
 * An undergraduate student from Seoul National University, <br/> [Vision and Learning Laboratory][snuvl-web]
 * Looking for a graduate (Ph.D) program in ML/DL
-* A huge fan of Tensorflow and Deep Learning 😀
-  <br/> .dogdrip[Tensorflow rocks!!!!]
+* A huge fan of TensorFlow and Deep Learning 😀
+  <br/> .dogdrip[TensorFlow rocks!!!!]
 
 .right.img-33[![Profile image](images/profile-wook.png)]
 
@@ -42,6 +32,23 @@ background-size: contain
 [snuvl-web]: http://vision.snu.ac.kr
 [wookayin-gh]: https://github.com/wookayin
 
+
+---
+
+## About
+
+This talk aims to share you with some practical guides and tips on writing and debugging TensorFlow codes.
+
+--
+
+... because you might find that debugging TensorFlow codes is something like ...
+
+
+---
+class: center, middle, no-number, bg-full
+background-image: url(images/meme-doesnt-work.jpg)
+background-repeat: no-repeat
+background-size: contain
 
 ---
 ## Welcome!
@@ -53,6 +60,7 @@ background-size: contain
 - General tips and guidelines for easy-debuggable code
 - .dogdrip[Benchmarking and profiling TensorFlow codes]
 
+
 ---
 
 ### .red[A Disclaimer]
@@ -60,17 +68,20 @@ background-size: contain
 - This talk is NOT about how to debug your *ML/DL model*
   .gray[(e.g. my model is not fitting well)],
   but about how to debug your TF codes *in a programming perspective*
-- I had to assume that the audience is somewhat familiar with basics of Tensorflow and Deep Learning;
-  it would be very good if you have an experience to write a Tensorflow code by yourself
+- I had to assume that the audience is somewhat familiar with basics of TensorFlow and Deep Learning;
+  it would be very good if you have an experience to write a TensorFlow code by yourself
 - Questions are highly welcomed! Please feel free to interrupt!
 
+
 ---
+
 template: inverse
 
 # Debugging?
 
 ---
-## Debugging Tensorflow Application is ...
+
+## Debugging TensorFlow Application is ...
 
 --
 
@@ -81,15 +92,18 @@ template: inverse
 - Do you agree? .dogdrip[Life is not that easy]
 
 ---
-## Review: Tensorflow Computation Mechanics
 
-* The core concept of Tensorflow: **The Computation Graph**
-* See Also: [Tensorflow Mechanics 101](https://www.tensorflow.org/versions/master/tutorials/mnist/tf/index.html)
+## Review: TensorFlow Computation Mechanics
+
+* The core concept of TensorFlow: **The Computation Graph**
+* See Also: [TensorFlow Mechanics 101](https://www.tensorflow.org/versions/master/tutorials/mnist/tf/index.html)
 
 .center.img-33[![](images/tensors_flowing.gif)]
 
+
 ---
-## Review: Tensorflow Computation Mechanics
+
+## Review: TensorFlow Computation Mechanics
 
 .gray.right[(from [TensorFlow docs](https://www.tensorflow.org/versions/master/get_started/basic_usage.html))]
 
@@ -99,8 +113,8 @@ TensorFlow programs are usually structured into
 
 .center.img-33[![](images/tensors_flowing.gif)]
 
-
 ---
+
 ## Review: in pure numpy ...
 
 ```python
@@ -132,7 +146,8 @@ def train():
 ```
 
 ---
-## Review: with Tensorflow
+
+## Review: with TensorFlow
 
 
 ```python
@@ -163,6 +178,7 @@ def train(session):
 ```
 
 ---
+
 ## Review: The Issues
 
 ```python
@@ -177,7 +193,7 @@ y = tf.placeholder(tf.float32, [None, 10])
 *pred = multilayer_perceptron(x)
 ```
 
-- The actual computation is done within `session.run()`;
+- The actual computation is done inside `session.run()`;
   what we just have done is to build a computation graph
 - The model building part (e.g. `multilayer_perceptron()`) is called only *once*
   before training, so we can't access the intermediates simply
@@ -188,17 +204,20 @@ y = tf.placeholder(tf.float32, [None, 10])
 ```
 
 ---
+
 ## [`Session.run()`][apidocs-sessionrun]
 
-The most important method in Tensorflow --- where every computation is performed!
+The most important method in TensorFlow --- where every computation is performed!
 
 - `tf.Session.run(fetches, feed_dict)` runs the operations and evaluates in `fetches`,
   subsituting the values (placeholders) in `feed_dict` for the corresponding input values.
 
 [apidocs-sessionrun]: https://www.tensorflow.org/versions/master/api_docs/python/train.html#scalar_summary
 
+
 ---
-## Why Tensorflow debugging is difficult?
+
+## Why TensorFlow debugging is difficult?
 
 - *The concept of Computation Graph* might be unfamiliar to us.
 - The "Inversion of Control"
@@ -209,16 +228,18 @@ The most important method in Tensorflow --- where every computation is performed
   unless we explicitly fetch them via `Session.run()`
 
 
-
 <!-- ============================================================================================ -->
 <!-- ============================================================================================ -->
 
 ---
+
 template: inverse
 
-# Debugging Facilities in Tensorflow
+# Debugging Facilities in TensorFlow
+
 
 ---
+
 ## Debugging Scenarios
 
 We may wish to ...
@@ -230,13 +251,14 @@ We may wish to ...
   evaluate some expressions for debugging
 - during training, .red[*NaN*] occurs in loss and variables .dogdrip[but I don't know why]
 
+
 --
 
-😀  Of course, in Tensorflow, we can do these very elegantly!
+😀  Of course, in TensorFlow, we can do these very elegantly!
 
 ---
 
-## Debugging in Tensorflow: Overview
+## Debugging in TensorFlow: Overview
 
 .blue[**Basic ways:**]
 
@@ -249,15 +271,15 @@ We may wish to ...
 
 * Interpose any python codelet in the computation graph
 * A step-by-step debugger
-
-
+* `tfdbg`: The TensorFlow debugger
 
 
 ---
+
 ## (1) Fetch tensors via `Session.run()`
 
-Tensorflow allows us to run parts of graph in isolation, i.e.
-.green[only the relavant part] of graph is executed (rather than executing *everything*)
+TensorFlow allows us to run parts of graph in isolation, i.e.
+.green[only the relevant part] of graph is executed (rather than executing *everything*)
 
 ```python
 x = tf.placeholder(tf.float32)
@@ -281,9 +303,10 @@ print('Loss(x,y) = %.3f' % session.run(loss, {x: 3.0, y: 9.0}))
 ```
 
 ---
+
 ## Tensor Fetching: Example
 
-We need to access to tensors as python expression
+We need to access to the tensors as python expressions
 
 ```python
 def multilayer_perceptron(x):
@@ -310,8 +333,8 @@ to fetch and evaluate them:
 ```
 
 
-
 ---
+
 ## (1) Fetch tensors via `Session.run()`
 
 .green[**The Good:**]
@@ -320,17 +343,19 @@ to fetch and evaluate them:
 * The most basic method to get debugging information.
 * We can fetch any evaluation result in numpy arrays, .green[anywhere] .gray[(except inside `Session.run()` or the computation graph)].
 
+
 --
 
 .red[**The Bad:**]
 
-* We need to hold a reference to the tensors to inspect,
+* We need to hold the reference to the tensors to inspect,
   which might be burdensome if model becomes complex and big
+  <br> .gray[(Or, we can simply pass the tensor name such as `fc0/Relu:0`)]
 * The feed-forward needs to be done in an atomic way (i.e. a single call of `Session.run()`)
 
 
-
 ---
+
 ## Tensor Fetching: The Bad (i)
 
 * We need to hold a reference to the tensors to inspect,
@@ -361,6 +386,7 @@ _, loss_, conv1_, conv2_, conv3_, conv4_, conv5_, fc6_, fc7_ = session.run(
 ```
 
 ---
+
 ## Tensor Fetching: The Bad (i)
 
 * Suggestion: Using a `dict` or class instance (e.g. `self.conv5`) is a very good idea
@@ -388,6 +414,7 @@ output = alexnet(images, net)
 
 
 ---
+
 ## Tensor Fetching: The Bad (i)
 
 * Suggestion: Using a `dict` or class instance (e.g. `self.conv5`) is a very good idea
@@ -416,8 +443,8 @@ output = model.build_model(images)
 ```
 
 
-
 ---
+
 ## Tensor Fetching: The Bad (ii)
 
 * The feed-forward (sometimes) needs to be done in an atomic way (i.e. a single call of `Session.run()`)
@@ -437,7 +464,9 @@ if np.isnan(loss_value):
   we may have to fetch the non-debugging-related tensors
   and the debugging-related tensors *at the same time*.
 
+
 ---
+
 ## Tensor Fetching: The Bad (ii)
 
 - In fact, we can just perform an additional `session.run()` for debugging purposes,
@@ -452,7 +481,7 @@ if it does not involve any side effect
                                feed_dict={images: batch_image})
 ```
 
-* A workaround: Use [`session.partial_run()`][tf-partial-run] .gray[(undocumented)]
+* A workaround: Use [`session.partial_run()`][tf-partial-run] .gray[(undocumented, and still experimental)]
 ```python
 h = sess.partial_run_setup([net['fc7'], loss_op, train_op], [images])
 [loss_value, _] = sess.partial_run(h, [loss_op, train_op],
@@ -460,13 +489,15 @@ h = sess.partial_run_setup([net['fc7'], loss_op, train_op], [images])
 fc7 = sess.partial_run(h, net['fc7'])
 ```
 
-[tf-partial-run]: https://github.com/tensorflow/tensorflow/blob/r0.9/tensorflow/python/client/session.py#L382
+[tf-partial-run]: https://github.com/tensorflow/tensorflow/blob/v1.0.0/tensorflow/python/client/session.py#L777
+
 
 ---
+
 ## (2) Tensorboard
 
 - An off-the-shelf monitoring and debugging tool!
-- Check out a must-read [tutorial][tf-tensorboard] from Tensorflow documentation
+- Check out a must-read [tutorial][tf-tensorboard] from TensorFlow documentation
 
 [tf-tensorboard]: https://www.tensorflow.org/versions/master/how_tos/summaries_and_tensorboard/index.html
 
@@ -475,13 +506,14 @@ fc7 = sess.partial_run(h, net['fc7'])
 
 - You will need to learn
   - how to use and collect [scalar/histogram/image summary][apidocs-summary]
-  - how to use [`SummaryWriter`][apidocs-summarywriter]
+  - how to use [`tf.summary.FileWriter`][apidocs-summarywriter] .dogdrip[(previously it was `SummaryWriter`)]
 
-[apidocs-summary]: https://www.tensorflow.org/versions/master/api_docs/python/train.html#scalar_summary
-[apidocs-summarywriter]: https://www.tensorflow.org/versions/master/api_docs/python/train.html#SummaryWriter
+[apidocs-summary]: https://www.tensorflow.org/versions/master/api_docs/python/summary/generation_of_summaries_#scalar
+[apidocs-summarywriter]: https://www.tensorflow.org/versions/master/api_docs/python/summary/generation_of_summaries_#FileWriter
 
 
 ---
+
 ## Tensorboard: A Quick Tutorial
 
 ```python
@@ -489,27 +521,29 @@ def multilayer_perceptron(x):
     # inside this, variables 'fc1/weights' and 'fc1/bias' are defined
     fc1 = layers.fully_connected(x, 256, activation_fn=tf.nn.relu,
                                  scope='fc1')
-*   tf.histogram_summary('fc1', fc1)
-*   tf.histogram_summary('fc1/sparsity', tf.nn.zero_fraction(fc1))
+*   tf.summary.histogram('fc1', fc1)
+*   tf.summary.histogram('fc1/sparsity', tf.nn.zero_fraction(fc1))
 
     fc2 = layers.fully_connected(fc1, 256, activation_fn=tf.nn.relu,
                                  scope='fc2')
-*   tf.histogram_summary('fc2', fc2)
-*   tf.histogram_summary('fc2/sparsity', tf.nn.zero_fraction(fc2))
+*   tf.summary.histogram('fc2', fc2)
+*   tf.summary.histogram('fc2/sparsity', tf.nn.zero_fraction(fc2))
     out = layers.fully_connected(fc2, 10, scope='out')
     return out
 
 # ... (omitted) ...
-loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+                      logits=pred, labels=y))
 *tf.scalar_summary('loss', loss)
 
 *# histogram summary for all trainable variables (slow?)
 *for v in tf.trainable_variables():
-*    tf.histogram_summary(v.name, v)
+*    tf.summary.histogram(v.name, v)
 ```
 
 
 ---
+
 ## Tensorboard: A Quick Tutorial
 
 ```python
@@ -521,9 +555,9 @@ train_op = tf.train.AdamOptimizer(learning_rate=0.001)\
 ```python
 def train(session):
     batch_size = 200
-    session.run(tf.initialize_all_variables())
-*   merged_summary_op = tf.merge_all_summaries()
-*   summary_writer = tf.train.SummaryWriter(FLAGS.train_dir, session.graph)
+    session.run(tf.global_variables_initializer())
+*   merged_summary_op = tf.summary.merge_all()
+*   summary_writer = tf.summary.FileWriter(FLAGS.train_dir, session.graph)
 
     # ... (omitted) ...
         for step in range(batch_steps):
@@ -536,6 +570,7 @@ def train(session):
 ```
 
 ---
+
 ## Tensorboard: A Quick Tutorial (Demo)
 
 Scalar Summary
@@ -551,10 +586,11 @@ Histogram Summary (activations and variables)
 
 
 ---
+
 ## Tensorboard and Summary: Noteworthies
 
 - Fetching histogram summary is *extremely* slow!
-    - GPU utilization can become very low
+    - GPU utilization can become very low (if the serialized values are huge)
     - In non-debugging mode, disable it completely; or fetch summaries only **periodically**, e.g.
     ```python
     eval_tensors = [self.loss, self.train_op]
@@ -565,24 +601,28 @@ Histogram Summary (activations and variables)
 
         current_loss = eval_ret[self.loss]
         if self.merged_summary_op in eval_tensors:
-            self.summary_writer.add_summary(eval_ret[self.merged_summary_op], step)
+            self.summary_writer.add_summary(
+                eval_ret[self.merged_summary_op], current_step)
     ```
     - I recommend to take simple and essential scalar summaries *only* (e.g. train/validation loss, overall accuracy, etc.), and to include debugging stuffs only on demand
 
 ---
+
 ## Tensorboard and Summary: Noteworthies
 
 - Some other recommendations:
-    - Use **proper names** for tensors and variables (specifying `name=...` to tensor/variable declaration)
+    - Use **proper names** (prefixed or scoped) for tensors and variables (specifying `name=...` to tensor/variable declaration)
     - Include both of train loss and validation loss,
       plus train/validation accuracy (if possible) over step
 
-.center.img-33[![](images/tensorboard-02-histogram.png)]
+.center.img-50[![](images/tensorboard-02-histogram.png)]
 
 ---
+
 ## (3) [`tf.Print()`][tf-print]
 
-- During run-time evaluation, we can print the value of a tensor without explicitly fetching and returning it to the code (i.e. via `session.run()`)
+- During run-time evaluation, we can print the value of a tensor
+  .green[without] explicitly fetching and returning it to the code (i.e. via `session.run()`)
 
 [tf-print]: https://www.tensorflow.org/versions/r0.8/api_docs/python/control_flow_ops.html#Print
 
@@ -595,6 +635,7 @@ tf.Print(input, data, message=None,
   when this op is evaluated.
 
 ---
+
 ## (3) `tf.Print()`: Examples
 
 ```python
@@ -622,30 +663,34 @@ I tensorflow/core/kernels/logging_ops.cc:79] argmax(out) = [3 6 9 8 3 9 1 0 1 1 
 ```
 
 ---
+
 ## (3) `tf.Print()`: Some drawbacks ...
 
 .red[Cons:]
 
-- It is hard to take a full control of print formats (e.g. to print a 2D tensor in matrix form)
+- It is hard to take a full control of print formats (e.g. how do we print a 2D tensor in a matrix format?)
 - Usually, we may want to print debugging values **conditionally** <br>(i.e. print them only if some condition is met)
   or **periodically** <br/> (i.e. print just only once per epoch)
     - `tf.Print()` has limitations to achieve this
-    - Tensorflow has control flow operations; an overkill?
+    - TensorFlow has control flow operations; an overkill?
 
 ---
+
 ## (3) [`tf.Assert()`][tf-assert]
 
 [tf-assert]: https://www.tensorflow.org/versions/r0.8/api_docs/python/control_flow_ops.html#Assert
 
 
 * Asserts that the given condition is true, *when evaluated* (during the computation)
-* If condition evaluates to false, print the list of tensors in `data`.
+* If condition evaluates to `False`, print the list of tensors in `data`,
+  and an error is thrown.
   `summarize` determines how many entries of the tensors to print.
 ```python
 tf.Assert(condition, data, summarize=None, name=None)
 ```
 
 ---
+
 ## `tf.Assert`: Examples
 
 Abort the program if ...
@@ -660,13 +705,17 @@ def multilayer_perceptron(x):
     return out
 ```
 
+
 --
 
 The assertion will not work!
 
 - `tf.Assert` is also an op, so it should be executed as well
 
+
+
 ---
+
 ## `tf.Assert`: Examples
 
 We need to ensure that `assert_op` is being executed when evaluating `out`:
@@ -693,9 +742,10 @@ def multilayer_perceptron(x):
 
 
 ---
+
 ## `tf.Assert`: Examples
 
-Another good alternative: store all the created assertion operations into a collection,
+Another good way: store all the created assertion operations into a collection,
   (merge them into a single op), and explicitly evaluate them using `Session.run()`
 
 
@@ -704,8 +754,9 @@ def multilayer_perceptron(x):
     fc1 = layers.fully_connected(x, 256, activation_fn=tf.nn.relu, scope='fc1')
     fc2 = layers.fully_connected(fc1, 256, activation_fn=tf.nn.relu, scope='fc2')
     out = layers.fully_connected(fc2, 10, activation_fn=None, scope='out')
-*   tf.add_to_collection('Asserts', tf.Assert(tf.reduce_all(out > 0), [out],
-                                             name='assert_out_gt_0'))
+*   tf.add_to_collection('Asserts',
+*        tf.Assert(tf.reduce_all(out > 0), [out], name='assert_out_gt_0')
+*   )
     return out
 
 # merge all assertion ops from the collection
@@ -718,9 +769,10 @@ def multilayer_perceptron(x):
 
 
 ---
+
 ## Some built-in useful Assert ops
 
-See [Asserts and boolean checks](https://www.tensorflow.org/versions/r0.9/api_docs/python/check_ops.html#asserts-and-boolean-checks) in the docs! (TF 0.9+)
+See [Asserts and boolean checks](https://www.tensorflow.org/versions/r1.0/api_docs/python/check_ops.html#asserts-and-boolean-checks) in the docs!
 
 ```python
 tf.assert_negative(x, data=None, summarize=None, name=None)
@@ -743,6 +795,7 @@ tf.is_strictly_increasing(x, name=None)
 If we need runtime assertions during computation, they are useful.
 
 ---
+
 ## (4) Step-by-step Debugger
 
 Python already has a powerful debugging utilities:
@@ -763,6 +816,7 @@ which are all **interactive** debuggers (like `gdb` for C/C++)
 [pudb]: https://pypi.python.org/pypi/pudb
 
 ---
+
 ## Debugger: Usage
 
 Insert `set_trace()` for a breakpoint
@@ -782,7 +836,9 @@ def multilayer_perceptron(x):
 ![](images/pdb-example-01.png)
 ]
 
+
 ---
+
 ## Debugger: Usage
 
 Debug breakpoints can be conditional:
@@ -802,11 +858,13 @@ Debug breakpoints can be conditional:
 - Let's break on training loop if some condition is met
 - Get the `fc2` tensor, and fetch its evaluation result (given `x`)
   - `Session.run()` can be invoked and executed anywhere, *even in the debugger*
-- Wow.... gonna love it..
+- .dogdrip[Wow.... gonna love it..]
+
 
 
 ---
-## Hint: Some Useful Tensorflow APIs
+
+## Hint: Some Useful TensorFlow APIs
 
 To get any .green[operations] or .green[tensors] that might *not* be stored explicitly:
 
@@ -822,13 +880,14 @@ To get .green[variables]:
 - `tf.get_variable_scope()`: Get the current variable scope
 - `tf.get_variable()`: Get a variable (see [Sharing Variables][tensorflow-variable-scope])
 - `tf.trainable_variables()`: List all the (trainable) variables
-  ```python
+```python
   [v for v in tf.all_variables() if v.name == 'fc2/weights:0'][0]
-  ```
+```
 
 [tensorflow-variable-scope]: https://www.tensorflow.org/versions/master/how_tos/variable_scope/index.html
 
 ---
+
 ## `IPython.embed()`
 
 .green[ipdb/pudb:]
@@ -859,36 +918,40 @@ oops
 [pdb-magic]: http://ipython.readthedocs.io/en/stable/interactive/magics.html?highlight=magic#magic-pdb
 -->
 
+
 ---
+
 ## (5) Debugging 'inside' the computation graph
 
 Our debugging tools so far can be used for debugging outside `Session.run()`.
 
 Question: How can we run a .red['custom'] operation? (e.g. custom layer)
 
+
 --
 
-- Tensorflow allows us [to write a custom operation][docs-custom-ops] in C++ !
+- TensorFlow allows us [to write a custom operation][docs-custom-ops] in C++ !
 
 - The 'custom' operation can be designed for logging or debugging purposes (like [PrintOp][tf-code-printop])
 - ... but very burdensome (need to compile, define op interface, and use it ...)
 
 [docs-custom-ops]: https://www.tensorflow.org/versions/master/how_tos/adding_an_op/index.html#implement-the-kernel-for-the-op
-[tf-code-printop]: https://github.com/tensorflow/tensorflow/blob/r0.9/tensorflow/core/kernels/logging_ops.cc#L53
+[tf-code-printop]: https://github.com/tensorflow/tensorflow/blob/v1.0.0/tensorflow/core/kernels/logging_ops.cc#L53
 
 
 ---
+
 ## (5) Interpose any python code in the computation graph
 
 We can also **embed** and **interpose** a python function in the graph:
 [`tf.py_func()`][docs-py-func] comes to the rescue!
 
 ```python
-tf.py_func(func, inp, Tout, name=None)
+tf.py_func(func, inp, Tout, stateful=True, name=None)
 ```
 
 - Wraps a python function and uses it .blue[**as a tensorflow op**].
-- Given a python function `func`, which .green[*takes numpy arrays*] as its inputs and returns numpy arrays as its outputs.
+- Given a python function `func`, which .green[*takes numpy arrays*] as its inputs and returns numpy arrays as its outputs, the function is wrapped as an operation.
 
 ```python
 def my_func(x):
@@ -899,11 +962,12 @@ inp = tf.placeholder(tf.float32, [...])
 *y = py_func(my_func, [inp], [tf.float32])
 ```
 
-[docs-py-func]: https://www.tensorflow.org/versions/r0.9/api_docs/python/script_ops.html#py_func
+[docs-py-func]: https://www.tensorflow.org/versions/r1.0/api_docs/python/script_ops.html#py_func
 
 
 
 ---
+
 ## (5) Interpose any python code in the computation graph
 
 In other words, we are now able to use the following (hacky) .green[**tricks**]
@@ -916,7 +980,9 @@ by intercepting the computation being executed on the graph:
 
 .gray.small[Warning: Some limitations may exist, e.g. thread-safety issue, not allowed to manipulate the state of session, etc..]
 
+
 ---
+
 ## Case Example (i): Print
 
 An ugly example ...
@@ -938,7 +1004,9 @@ def multilayer_perceptron(x):
     return out
 ```
 
+
 ---
+
 ## Case Example (ii): Breakpoints!
 
 An ugly example to attach breakpoints ...
@@ -961,30 +1029,30 @@ def multilayer_perceptron(x):
     return out
 ```
 
-<!--
--~-
-## Case Example (iv): Wanna see gradients?
-
-TODO: Add this damn I run out of time
--->
 
 ---
+
 ## Another one: The `tdb` library
 
-A third-party tensorflow debugging tool: .small[https://github.com/ericjang/tdb]
+A third-party TensorFlow debugging tool: .small[https://github.com/ericjang/tdb]
 <br/> .small[(not actively maintained and looks clunky, but still good for prototyping)]
 
 .img-90.center[
 ![](https://camo.githubusercontent.com/4c671d2b359c9984472f37a73136971fd60e76e4/687474703a2f2f692e696d6775722e636f6d2f6e30506d58516e2e676966)
 ]
 
+
+
 ---
-## `tfdbg`: The tensorflow debugger
 
-.small.green.emph[(Added in December 2016)]
+## (6) `tfdbg`: The *official* TensorFlow debugger
 
-Recent versions of Tensorflow has the official debugger (a.k.a. [`tfdbg`](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug))
-is under development. Check out a [Tutorial](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug/examples)!
+<!--.small.green.emph[(Added in December 2016)]-->
+
+Recent versions of TensorFlow has the official debugger ([`tfdbg`](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug)).
+Still experimental, but works quite well!
+
+Check out the [HOW-TOs](https://www.tensorflow.org/programmers_guide/debugger) and [Examples](https://github.com/tensorflow/tensorflow/tree/master/tensorflow/python/debug/examples) on `tfdbg`!!!
 
 ```python
 import tensorflow.python.debug as tf_debug
@@ -994,40 +1062,43 @@ sess = tf.Session()
 *sess = tf_debug.LocalCLIDebugWrapperSession(sess)
 
 # Add a tensor filter (similar to breakpoint)
-sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
+*sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
 
 # Each session.run() will be intercepted by the debugger,
 # and we can inspect the value of tensors via the debugger interface
 sess.run(loss, feed_dict = {x : ...})
 ```
 
-Although it is not yet fully functional and has some bugs, it is quite usable !
+<!--
+Although it is not yet fully functional and has some bugs, it is quite usable!
 (Google Brain team will complete and announce it soon)
+-->
 
 
 ---
-## `tfdbg`: The tensorflow debugger
 
-.small.green.emph[(Added in December 2016)]
+## (6) `tfdbg`: The TensorFlow debugger
+
+<!--.small.green.emph[(Added in December 2016)]-->
 
 .img-100.center[
 ![](images/tfdbg_example1.png)
 ]
 
 ---
-## `tfdbg`: The tensorflow debugger
 
-.small.green.emph[(Added in December 2016)]
+## (6) `tfdbg`: The TensorFlow debugger
+
+<!--.small.green.emph[(Added in December 2016)]-->
 
 .img-100.center[
 ![](images/tfdbg_example2.png)
 ]
 
----
+<!--
 ## Teaser: `tfdb`
 
-A new tensorflow debugger and helper library will be published soon :-)
-<!--.small[https://github.com/wookayin/tfdb] -->
+A new TensorFlow debugger and helper library will be published soon :-)
 
 ```python
 import tfdb
@@ -1041,7 +1112,118 @@ def multilayer_perceptron(x):
     return out
 ```
 
+-->
+
+
 ---
+
+## `tfdbg`: Features and Quick References
+
+Conceptually, a wrapper session is employed (currently, CLI debugger session); it can intercept a single run of `session.run()`
+
+
+- `run` / `r` : Execute the run() call .blue[with debug tensor-watching]
+- `run -n` / `r -n` : Execute the run() call .blue[without] debug tensor-watching
+- `run -f <filter_name>` : Keep executing run() calls until a dumped tensor passes a registered filter (conditional breakpoint)
+    - e.g. `has_inf_or_nan`
+
+.img-80.center[
+![](images/tfdbg_example_run.png)
+]
+
+---
+
+## `tfdbg`: Tensor Filters
+
+Registering tensor filters:
+
+```python
+sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
+```
+
+Tensor filters are just python functions `(datum, tensor) -> bool`:
+
+```python
+def has_inf_or_nan(datum, tensor):
+  _ = datum  # Datum metadata is unused in this predicate.
+
+  if tensor is None:
+    # Uninitialized tensor doesn't have bad numerical values.
+    return False
+  elif (np.issubdtype(tensor.dtype, np.float) or
+        np.issubdtype(tensor.dtype, np.complex) or
+        np.issubdtype(tensor.dtype, np.integer)):
+    return np.any(np.isnan(tensor)) or np.any(np.isinf(tensor))
+  else:
+    return False
+```
+Running tensor filters are, therefore, quite slow.
+
+
+---
+
+## `tfdbg`: Tensor Fetching
+
+In a tensor dump mode (the **run-end UI**), the debugger shows the list of tensors dumped in the `session.run()` call:
+
+.img-100.center[
+![](images/tfdbg_example_fetch.png)
+]
+
+---
+
+## `tfdbg`: Tensor Fetching
+
+Commands:
+
+- .blue[`list_tensors` (`lt`)] : Show the list of dumped tensor(s).
+- .blue[`print_tensor` (`pt`)] : Print the value of a dumped tensor.
+- `node_info` (`ni`) : Show information about a node
+    - `ni -t` : Shows the traceback of tensor creation
+- `list_inputs` (`li`) : Show inputs to a node
+- `list_outputs` (`lo`) : Show outputs to a node
+- `run_info` (`ri`) : Show the information of current run <br/> (e.g. what to fetch, what feed_dict is)
+- .green[`invoke_stepper` (`s`)] : Invoke the stepper!
+- `run` (`r`) : Move to the next run
+
+
+---
+
+## `tfdbg`: Tensor Fetching
+
+Example: `print_tensor fc2/Relu:0`
+
+.img-80.center[
+![](images/tfdbg_example_pt.png)
+]
+
+- Slicing: `pt f2/Relu:0[0:10]`
+- Dumping: `pt fc2/Relu:0 > /tmp/debug/fc2.txt`
+
+**See also**: [tfdbg CLI Frequently-Used Commands](https://www.tensorflow.org/programmers_guide/debugger#tfdbg_cli_frequently-used_commands)
+
+
+
+---
+
+## `tfdbg`: Stepper
+
+Shows the tensor value(s) in a topologically-sorted order for the run.
+
+.img-100.center[
+![](images/tfdbg_example_stepper.png)
+]
+
+---
+
+## `tfdbg`: Other Remarks
+
+- Currently it is actively being developed (still experimental)
+- In a near future, a web-based interactive debugger (integration with TensorBoard) will be out!
+
+---
+
 ## Debugging: Summary
 
 * `Session.run()`: Explicitly fetch, and print
@@ -1049,26 +1231,31 @@ def multilayer_perceptron(x):
 * `tf.Print()`, `tf.Assert()` operation
 * Use python debugger (`ipdb`, `pudb`)
 * Interpose your debugging python code in the graph
+* The TensorFlow debugger: `tfdbg`
 
 
 .green[There is no silver bullet; one might need to choose the most convenient and suitable debugging tool, depending on the case]
 
 ---
+
 template: inverse
 
 # Other General Tips
-## .gray[(in a Programming Perspective)]
+
+## .gray[(in a Programmer's Perspective)]
 
 ---
+
 ## General Tips of Debugging
 
 - Learn to use debugging tools, but do not solely rely on them when a problem occurs.
 - Sometimes, just sitting down and reading through 👀 your code with ☕ (a careful code review!) would be greatly helpful.
 
 ---
+
 ## General Tips from Software Engineering
 
-Almost .red[all] of rule-of-thumb tips and guidelines for writing good, neat, and defensive codes can be applied to Tensorflow codes :)
+Almost .red[all] of rule-of-thumb tips and guidelines for writing good, neat, and defensive codes can be applied to TensorFlow codes :)
 
 * Check and sanitize inputs
 * Logging
@@ -1089,6 +1276,7 @@ There are some good guides on the web like [this][debug-tip-matloff]
 [debug-tip-matloff]: http://heather.cs.ucdavis.edu/~matloff/UnixAndC/CLanguage/Debug.html
 
 ---
+
 ## Use asserts as much as you can
 
 * Use assertion anywhere (early fail is always good)
@@ -1106,6 +1294,7 @@ assert net['fc7'].get_shape().as_list() == [None, 4096]
   * should be turned off if we are not debugging now
 
 ---
+
 ## Use proper logging
 
 - Being verbose for logging helps a lot (configurations for training hyperparameters, monitor train/validation loss, learning rate, elapsed time, etc.) <br/><br/>
@@ -1114,6 +1303,7 @@ assert net['fc7'].get_shape().as_list() == [None, 4096]
 ]
 
 ---
+
 ## Guard against Numerical Errors
 
 Quite often, `NaN` occurs during the training
@@ -1127,16 +1317,17 @@ Quite often, `NaN` occurs during the training
 <p>
 
 * Some useful TF APIs
-  * [`t = tf.verify_tensor_all_finite(t, msg)`](https://www.tensorflow.org/versions/master/api_docs/python/control_flow_ops.html#verify_tensor_all_finite)
-  * [`tf.add_check_numerics_ops()`](https://www.tensorflow.org/versions/master/api_docs/python/control_flow_ops.html#add_check_numerics_ops)
+  * .small[`loss = [tf.verify_tensor_all_finite(loss, msg)`](https://www.tensorflow.org/versions/master/api_docs/python/control_flow_ops.html#verify_tensor_all_finite)]
+  * .small[[`tf.add_check_numerics_ops()`](https://www.tensorflow.org/versions/master/api_docs/python/control_flow_ops.html#add_check_numerics_ops)]
 
 
 ---
+
 ## Name your tensors properly
 
 * It is recommended to **specify names** for intermediate tensors and variables when building model
     * Using variable scopes properly is also a very good idea
-* When something wrong happens, we can directly figure out where the error is from
+* When something wrong happens, we can easily figure out where the error is from
 
 ```python
 ValueError: Cannot feed value of shape (200,)
@@ -1155,6 +1346,7 @@ ValueError: Tensor conversion requested dtype float32 for Tensor with
 ```
 
 ---
+
 ## Name your tensors properly
 
 ```python
@@ -1186,6 +1378,7 @@ def multilayer_perceptron(x):
 ```
 
 ---
+
 ## Name your tensors properly
 
 The style that I much prefer:
@@ -1212,6 +1405,19 @@ def multilayer_perceptron(x):
 ```
 
 ---
+
+## And more style guides ...?
+
+<div class="center border-dotted" style="padding: 2em 0; margin: 3em 0;">
+.large[Toward Best Practices of TensorFlow Code Patterns]
+
+.small[https://github.com/wookayin/TensorFlowKR-2017-talk-bestpractice]
+</div>
+
+all of which will help you to write easily-debuggable codes!
+
+---
+
 ## Other Topics: Performance and Profiling
 
 - Run-time performance is a very important topic! <br/>
@@ -1232,6 +1438,7 @@ def multilayer_perceptron(x):
 [gpustat]: https://github.com/wookayin/gpustat
 
 ---
+
 ## Other Topics: Performance and Profiling
 
 - Some possible factors that might slow down your code:
@@ -1242,11 +1449,12 @@ def multilayer_perceptron(x):
 <p>
 
 - What we can do
+    - Use `tfdbg` !!!
     - Use [`cProfile`][python-profilers],
       [`line_profiler`][line-profiler]
       or [`%profile`][ipython-profile] in IPython
     - Use [`nvprof`][nvprof] for profiling CUDA operations
-    - Use CUPTI (CUDA Profiling Tools Interface)-based [tools][tf-issue-1824] in Tensorflow
+    - Use CUPTI (CUDA Profiling Tools Interface) [tools][tf-issue-1824] for TF
 
 .img-66.center[![](images/tracing-cupti.png)]
 
@@ -1258,16 +1466,18 @@ def multilayer_perceptron(x):
 
 
 ---
+
 ## Concluding Remarks
 
 We have talked about
 
-- How to debug Tensorflow and python applications
+- How to debug TensorFlow and python applications
 - Some tips and guidelines for easy debugging --- write a nice code that would require less debugging :)
 
 
 
 ---
+
 name: last-page
 class: center, middle, no-number
 
@@ -1292,4 +1502,4 @@ class: center, middle, no-number
 
 .footnote[Slideshow created using [remark](http://github.com/gnab/remark).]
 
-<!-- vim: set ft=markdown: -->
+<!-- vim: set ft=pandoc -->

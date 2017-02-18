@@ -9,8 +9,9 @@
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
-      @import url('./style.css');
     </style>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
   </head>
   <body>
     <div id="slideshow"></div>
@@ -19,7 +20,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 
     <script src="./remark-latest.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 
     <script type="text/x-mathjax-config">
@@ -48,8 +49,20 @@
       var slideshow = remark.create({
         sourceUrl: 'slides/main.md',
         highlightStyle: 'github',
-        highlightLines: true
+          highlightLines: true,
+
+          // navigation options
+          navigation: {
+            scroll: false,
+            touch: true,
+            click: false
+          },
+
+          // Disable counting of incremental slides in the slide counting
+          countIncrementalSlides: false
       });
+        window['slideshow'] = slideshow;
+
       // extract the embedded styling from ansi spans
       $('code.terminal span.hljs-ansi').replaceWith(function(i, x) {
         x = x.replace(/&lt;(\/?(span).*?)&gt;/g, '<$1>');
